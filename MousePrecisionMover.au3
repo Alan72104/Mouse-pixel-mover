@@ -70,7 +70,7 @@ Func DisplayToolTip($extra = Null, $extraTooltipTime = 2000)
     EndIf
     ToolTip(iv("Press arrow keys to move the mouse" & @CRLF & _
                "Current delta: $         Pos: $, $" & $extraTooltip, _
-               $delta, MouseGetPos(0), MouseGetPos(1)), @DesktopWidth / 2, 30, "", $TIP_NOICON, $TIP_CENTER)
+               $delta, MouseGetPos(0), MouseGetPos(1)), @DesktopWidth / 2, 25, "", $TIP_NOICON, $TIP_CENTER)
 EndFunc
 
 Func Main()
