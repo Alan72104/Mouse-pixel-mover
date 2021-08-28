@@ -8,6 +8,7 @@ Global $extraTooltip = ""
 Global $extraTooltipTimer = 0
 Global $extraTooltipCooldown = 2000
 Global $mousePos[2]
+Global $paused = False
 HotKeySet("{UP}", "Move")
 HotKeySet("{DOWN}", "Move")
 HotKeySet("{LEFT}", "Move")
@@ -18,6 +19,7 @@ HotKeySet("^{LEFT}", "Move")
 HotKeySet("^{RIGHT}", "Move")
 HotKeySet("!{UP}", "ChangeDelta")
 HotKeySet("!{DOWN}", "ChangeDelta")
+HotKeySet("{F6}", "TogglePause")
 HotKeySet("{F7}", "Terminate")
 
 Func Move()
@@ -47,7 +49,7 @@ Func Move()
             MouseMove($mousePos[0] + $delta * 5, $mousePos[1], $speed)
             $movedDistance[0] += $delta * 5
     EndSwitch
-    DisplayToolTip(True)
+    DisplayToolTip(@CRLF & iv("Distance moved: $, $", $movedDistance[0], $movedDistance[1]))
 EndFunc
 
 Func ChangeDelta()
@@ -60,11 +62,11 @@ Func ChangeDelta()
     DisplayToolTip()
 EndFunc
 
-Func DisplayToolTip($setExtra = False, $extraTooltipTime = 2000)
-    If $setExtra Then
+Func DisplayToolTip($extra = Null, $extraTooltipTime = 2000)
+    If $extra <> Null Then
         $extraTooltipTimer = TimerInit()
         $extraTooltipCooldown = $extraTooltipTime
-        $extraTooltip = @CRLF & iv("Distance moved: $, $", $movedDistance[0], $movedDistance[1])
+        $extraTooltip = $extra
     EndIf
     ToolTip(iv("Press arrow keys to move the mouse" & @CRLF & _
                "Current delta: $         Pos: $, $" & $extraTooltip, _
@@ -75,6 +77,7 @@ Func Main()
     While 1
         If $extraTooltip <> "" And TimerDiff($extraTooltipTimer) > $extraTooltipCooldown Then
             $extraTooltip = ""
+            $extraTooltipCooldown = 2000
             $movedDistance[0] = 0
             $movedDistance[1] = 0
             DisplayToolTip()
@@ -89,6 +92,35 @@ Func Main()
 EndFunc
 
 Main()
+
+Func TogglePause()
+    $paused = Not $paused
+    If $paused Then
+        DisplayToolTip(@CRLF & "PAUSED!!", 2147483647)
+        HotKeySet("{UP}")
+        HotKeySet("{DOWN}")
+        HotKeySet("{LEFT}")
+        HotKeySet("{RIGHT}")
+        HotKeySet("^{UP}")
+        HotKeySet("^{DOWN}")
+        HotKeySet("^{LEFT}")
+        HotKeySet("^{RIGHT}")
+        HotKeySet("!{UP}")
+        HotKeySet("!{DOWN}")
+    Else
+        DisplayToolTip("")
+        HotKeySet("{UP}", "Move")
+        HotKeySet("{DOWN}", "Move")
+        HotKeySet("{LEFT}", "Move")
+        HotKeySet("{RIGHT}", "Move")
+        HotKeySet("^{UP}", "Move")
+        HotKeySet("^{DOWN}", "Move")
+        HotKeySet("^{LEFT}", "Move")
+        HotKeySet("^{RIGHT}", "Move")
+        HotKeySet("!{UP}", "ChangeDelta")
+        HotKeySet("!{DOWN}", "ChangeDelta")
+    EndIf
+EndFunc
 
 Func Terminate()
     ToolTip("")
