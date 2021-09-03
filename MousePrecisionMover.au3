@@ -12,12 +12,40 @@ Global $paused = False
 Global Enum $KEYNUM, $STATE, $TIMER
 ; Up, down, left, right
 Global $keys[4][3] = [[0x26, 0, 0], [0x28, 0, 0], [0x25, 0, 0], [0x27, 0, 0]]
+; False: only one hotkey can be activated at a time, arrow key strokes will be eaten
+; True: multiple hotkeys can be activated at a time, arrow key strokes retain the normal functionality
+Global Const $allowHotkeyPassThrough = True
+If Not $allowHotkeyPassThrough Then
+	HotKeySet("{UP}", "Move")
+	HotKeySet("{DOWN}", "Move")
+	HotKeySet("{LEFT}", "Move")
+	HotKeySet("{RIGHT}", "Move")
+	HotKeySet("^{UP}", "Move")
+	HotKeySet("^{DOWN}", "Move")
+	HotKeySet("^{LEFT}", "Move")
+	HotKeySet("^{RIGHT}", "Move")
+EndIf
 HotKeySet("!{UP}", "ChangeDelta")
 HotKeySet("!{DOWN}", "ChangeDelta")
 HotKeySet("{F6}", "TogglePause")
 HotKeySet("{F7}", "Terminate")
 
 Func Move($direction)
+	If Not $allowHotkeyPassThrough Then
+		Switch StringReplace(@HotKeyPressed, "^", "")
+			Case "{UP}"
+				$direction = 1
+			Case "{DOWN}"
+				$direction = 2
+			Case "{LEFT}"
+				$direction = 3
+			Case "{RIGHT}"
+				$direction = 4
+		EndSwitch
+		If StringInStr(@HotKeyPressed, "^") Then
+			$direction *= 10
+		EndIf
+	EndIf
     Switch $direction
         Case 1  ; Up
             MouseMove($mousePos[0], $mousePos[1] + -$delta, $speed)
@@ -71,7 +99,7 @@ EndFunc
 
 Func Main()
     While 1
-		If Not $paused Then
+		If Not $paused And $allowHotkeyPassThrough Then
 			For $i = 0 To 3
 				Local $tempState = GetAsyncKeyState($keys[$i][$KEYNUM])
 				If $tempState Then
@@ -135,8 +163,28 @@ Func TogglePause()
     $paused = Not $paused
     If $paused Then
         DisplayToolTip(@CRLF & "PAUSED!!", 2147483647)
+		If Not $allowHotkeyPassThrough Then
+			HotKeySet("{UP}", "")
+			HotKeySet("{DOWN}", "")
+			HotKeySet("{LEFT}", "")
+			HotKeySet("{RIGHT}", "")
+			HotKeySet("^{UP}", "")
+			HotKeySet("^{DOWN}", "")
+			HotKeySet("^{LEFT}", "")
+			HotKeySet("^{RIGHT}", "")
+		EndIf
     Else
         DisplayToolTip("")
+		If Not $allowHotkeyPassThrough Then
+			HotKeySet("{UP}", "Move")
+			HotKeySet("{DOWN}", "Move")
+			HotKeySet("{LEFT}", "Move")
+			HotKeySet("{RIGHT}", "Move")
+			HotKeySet("^{UP}", "Move")
+			HotKeySet("^{DOWN}", "Move")
+			HotKeySet("^{LEFT}", "Move")
+			HotKeySet("^{RIGHT}", "Move")
+		EndIf
     EndIf
 EndFunc
 
