@@ -2,6 +2,8 @@
 
 ; Arrow keys to move
 ; Alt + up/down to change delta
+; F6 to pause
+; F7 to exit
 
 ; False: only one hotkey can be activated at a time, arrow key strokes will be eaten
 ; True: multiple hotkeys can be activated at a time, arrow key strokes retain the normal functionality
@@ -146,14 +148,14 @@ Func TogglePause()
     If $paused Then
         DisplayToolTip(@CRLF & "PAUSED!!", 2147483647)
         If Not $allowHotkeyPassThrough Then
-            HotKeySet("{UP}", "")
-            HotKeySet("{DOWN}", "")
-            HotKeySet("{LEFT}", "")
-            HotKeySet("{RIGHT}", "")
-            HotKeySet("^{UP}", "")
-            HotKeySet("^{DOWN}", "")
-            HotKeySet("^{LEFT}", "")
-            HotKeySet("^{RIGHT}", "")
+            HotKeySet("{UP}")
+            HotKeySet("{DOWN}")
+            HotKeySet("{LEFT}")
+            HotKeySet("{RIGHT}")
+            HotKeySet("^{UP}")
+            HotKeySet("^{DOWN}")
+            HotKeySet("^{LEFT}")
+            HotKeySet("^{RIGHT}")
         EndIf
     Else
         DisplayToolTip("")
