@@ -15,14 +15,14 @@ Global $keys[4][3] = [[0x26, 0, 0], [0x28, 0, 0], [0x25, 0, 0], [0x27, 0, 0]]
 ; True: multiple hotkeys can be activated at a time, arrow key strokes retain the normal functionality
 Global Const $allowHotkeyPassThrough = False
 If Not $allowHotkeyPassThrough Then
-	HotKeySet("{UP}", "Move")
-	HotKeySet("{DOWN}", "Move")
-	HotKeySet("{LEFT}", "Move")
-	HotKeySet("{RIGHT}", "Move")
-	HotKeySet("^{UP}", "Move")
-	HotKeySet("^{DOWN}", "Move")
-	HotKeySet("^{LEFT}", "Move")
-	HotKeySet("^{RIGHT}", "Move")
+    HotKeySet("{UP}", "Move")
+    HotKeySet("{DOWN}", "Move")
+    HotKeySet("{LEFT}", "Move")
+    HotKeySet("{RIGHT}", "Move")
+    HotKeySet("^{UP}", "Move")
+    HotKeySet("^{DOWN}", "Move")
+    HotKeySet("^{LEFT}", "Move")
+    HotKeySet("^{RIGHT}", "Move")
 EndIf
 HotKeySet("!{UP}", "ChangeDelta")
 HotKeySet("!{DOWN}", "ChangeDelta")
@@ -31,27 +31,27 @@ HotKeySet("{F7}", "Terminate")
 
 Func Move($dir, $mul = 1)
     Local Static $map[4][2] = [[0,-1],[0,1],[-1,0],[1,0]]
-	If Not $allowHotkeyPassThrough Then
+    If Not $allowHotkeyPassThrough Then
         Local $dir, $mul = 1
-		Switch StringReplace(@HotKeyPressed, "^", "")
-			Case "{UP}"
-				$dir = 0
-			Case "{DOWN}"
-				$dir = 1
-			Case "{LEFT}"
-				$dir = 2
-			Case "{RIGHT}"
-				$dir = 3
-		EndSwitch
-		If @extended Then
-			$mul = 5
-		EndIf
-	EndIf
+        Switch StringReplace(@HotKeyPressed, "^", "")
+            Case "{UP}"
+                $dir = 0
+            Case "{DOWN}"
+                $dir = 1
+            Case "{LEFT}"
+                $dir = 2
+            Case "{RIGHT}"
+                $dir = 3
+        EndSwitch
+        If @extended Then
+            $mul = 5
+        EndIf
+    EndIf
     MouseMove($mousePos[0] + $map[$dir][0] * $mul, $mousePos[1] + $map[$dir][1] * $mul, $speed)
     $movedDistance[0] += $map[$dir][0] * $mul
     $movedDistance[1] += $map[$dir][1] * $mul
     DisplayToolTip(@CRLF & iv("Distance moved: $, $", $movedDistance[0], $movedDistance[1]))
-	UpdatePos()
+    UpdatePos()
 EndFunc
 
 Func ChangeDelta()
@@ -77,10 +77,10 @@ EndFunc
 
 Func Main()
     While 1
-		If Not $paused And $allowHotkeyPassThrough Then
-			For $i = 0 To 3
-				Local $tempState = GetAsyncKeyState($keys[$i][$KEYNUM])
-				If $tempState Then
+        If Not $paused And $allowHotkeyPassThrough Then
+            For $i = 0 To 3
+                Local $tempState = GetAsyncKeyState($keys[$i][$KEYNUM])
+                If $tempState Then
                     Switch $keys[$i][$STATE]
                         Case 0  ; Nope
                             $keys[$i][$STATE] = 1
@@ -92,24 +92,24 @@ Func Main()
                             EndIf
                         Case 1  ; Pressed
                             If TimerDiff($keys[$i][$TIMER]) >= 500 Then
-								$keys[$i][$TIMER] = TimerInit()
-								$keys[$i][$STATE] = 2
-							EndIf
+                                $keys[$i][$TIMER] = TimerInit()
+                                $keys[$i][$STATE] = 2
+                            EndIf
                         Case 2  ; Repeating
                             If TimerDiff($keys[$i][$TIMER]) >= 1000 / 20 Then
-								$keys[$i][$TIMER] = TimerInit()
-								If GetAsyncKeyState(0x11) Then  ; Control
-									Move($i, 5)
-								Else
-									Move($i)
-								EndIf
-							EndIf
+                                $keys[$i][$TIMER] = TimerInit()
+                                If GetAsyncKeyState(0x11) Then  ; Control
+                                    Move($i, 5)
+                                Else
+                                    Move($i)
+                                EndIf
+                            EndIf
                     EndSwitch
-				Else
-					$keys[$i][$STATE] = 0
-				EndIf
-			Next
-		EndIf
+                Else
+                    $keys[$i][$STATE] = 0
+                EndIf
+            Next
+        EndIf
         If $extraTooltip <> "" And TimerDiff($extraTooltipTimer) > $extraTooltipCooldown Then
             $extraTooltip = ""
             $extraTooltipCooldown = 2000
@@ -125,43 +125,43 @@ EndFunc
 Main()
 
 Func UpdatePos()
-	Local $newMousePos = MouseGetPos()
-	If $mousePos[0] <> $newMousePos[0] Or $mousePos[1] <> $newMousePos[1] Then
-		$mousePos = $newMousePos
-		DisplayToolTip()
-	EndIf
+    Local $newMousePos = MouseGetPos()
+    If $mousePos[0] <> $newMousePos[0] Or $mousePos[1] <> $newMousePos[1] Then
+        $mousePos = $newMousePos
+        DisplayToolTip()
+    EndIf
 EndFunc
 
 Func GetAsyncKeyState($key)
-	Return BitAND(DllCall("user32.dll", "short", "GetAsyncKeyState", "int", $key)[0], 0x8000) <> 0
+    Return BitAND(DllCall("user32.dll", "short", "GetAsyncKeyState", "int", $key)[0], 0x8000) <> 0
 EndFunc
 
 Func TogglePause()
     $paused = Not $paused
     If $paused Then
         DisplayToolTip(@CRLF & "PAUSED!!", 2147483647)
-		If Not $allowHotkeyPassThrough Then
-			HotKeySet("{UP}", "")
-			HotKeySet("{DOWN}", "")
-			HotKeySet("{LEFT}", "")
-			HotKeySet("{RIGHT}", "")
-			HotKeySet("^{UP}", "")
-			HotKeySet("^{DOWN}", "")
-			HotKeySet("^{LEFT}", "")
-			HotKeySet("^{RIGHT}", "")
-		EndIf
+        If Not $allowHotkeyPassThrough Then
+            HotKeySet("{UP}", "")
+            HotKeySet("{DOWN}", "")
+            HotKeySet("{LEFT}", "")
+            HotKeySet("{RIGHT}", "")
+            HotKeySet("^{UP}", "")
+            HotKeySet("^{DOWN}", "")
+            HotKeySet("^{LEFT}", "")
+            HotKeySet("^{RIGHT}", "")
+        EndIf
     Else
         DisplayToolTip("")
-		If Not $allowHotkeyPassThrough Then
-			HotKeySet("{UP}", "Move")
-			HotKeySet("{DOWN}", "Move")
-			HotKeySet("{LEFT}", "Move")
-			HotKeySet("{RIGHT}", "Move")
-			HotKeySet("^{UP}", "Move")
-			HotKeySet("^{DOWN}", "Move")
-			HotKeySet("^{LEFT}", "Move")
-			HotKeySet("^{RIGHT}", "Move")
-		EndIf
+        If Not $allowHotkeyPassThrough Then
+            HotKeySet("{UP}", "Move")
+            HotKeySet("{DOWN}", "Move")
+            HotKeySet("{LEFT}", "Move")
+            HotKeySet("{RIGHT}", "Move")
+            HotKeySet("^{UP}", "Move")
+            HotKeySet("^{DOWN}", "Move")
+            HotKeySet("^{LEFT}", "Move")
+            HotKeySet("^{RIGHT}", "Move")
+        EndIf
     EndIf
 EndFunc
 
