@@ -1,5 +1,11 @@
 #include <AutoItConstants.au3>
 
+; Arrow keys to move
+; Alt + up/down to change delta
+
+; False: only one hotkey can be activated at a time, arrow key strokes will be eaten
+; True: multiple hotkeys can be activated at a time, arrow key strokes retain the normal functionality
+Global Const $allowHotkeyPassThrough = False
 Global $delta = 1
 Global $speed = 2
 Global $movedDistance[2] = [0, 0]
@@ -11,9 +17,6 @@ Global $paused = False
 Global Enum $KEYNUM, $STATE, $TIMER
 ; Up, down, left, right
 Global $keys[4][3] = [[0x26, 0, 0], [0x28, 0, 0], [0x25, 0, 0], [0x27, 0, 0]]
-; False: only one hotkey can be activated at a time, arrow key strokes will be eaten
-; True: multiple hotkeys can be activated at a time, arrow key strokes retain the normal functionality
-Global Const $allowHotkeyPassThrough = False
 If Not $allowHotkeyPassThrough Then
     HotKeySet("{UP}", "Move")
     HotKeySet("{DOWN}", "Move")
@@ -47,9 +50,11 @@ Func Move($dir, $mul = 1)
             $mul = 5
         EndIf
     EndIf
-    MouseMove($mousePos[0] + $map[$dir][0] * $mul, $mousePos[1] + $map[$dir][1] * $mul, $speed)
-    $movedDistance[0] += $map[$dir][0] * $mul
-    $movedDistance[1] += $map[$dir][1] * $mul
+    Local $xToMove = $map[$dir][0] * $delta * $mul
+    Local $yToMove = $map[$dir][1] * $delta * $mul
+    MouseMove($mousePos[0] + $xToMove, $mousePos[1] + $yToMove, $speed)
+    $movedDistance[0] += $xToMove
+    $movedDistance[1] += $yToMove
     DisplayToolTip(@CRLF & iv("Distance moved: $, $", $movedDistance[0], $movedDistance[1]))
     UpdatePos()
 EndFunc
