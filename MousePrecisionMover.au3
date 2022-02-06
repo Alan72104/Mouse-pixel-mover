@@ -8,8 +8,10 @@
 ; False: only one hotkey can be activated at a time, arrow key strokes will be eaten
 ; True: multiple hotkeys can be activated at a time, arrow key strokes retain the normal functionality
 Global Const $allowHotkeyPassThrough = False
+; Moving speed
+Global Const $speed = 2
+
 Global $delta = 1
-Global $speed = 2
 Global $movedDistance[2] = [0, 0]
 Global $extraTooltip = ""
 Global $extraTooltipTimer = 0
