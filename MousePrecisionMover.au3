@@ -1,6 +1,6 @@
 #include <AutoItConstants.au3>
 
-; Arrow keys to move
+; Arrow keys to move, ctrl + arrow to move 5x distance
 ; Alt + up/down to change delta
 ; F6 to pause
 ; F7 to exit
