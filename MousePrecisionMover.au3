@@ -56,6 +56,7 @@ Func Move($dir, $mul = 1)
     EndIf
     Local $xToMove = $map[$dir][0] * $delta * $mul
     Local $yToMove = $map[$dir][1] * $delta * $mul
+    UpdatePos()
     MouseMove($mousePos[0] + $xToMove, $mousePos[1] + $yToMove, $speed)
     $movedDistance[0] += $xToMove
     $movedDistance[1] += $yToMove
