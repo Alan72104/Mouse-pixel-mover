@@ -1,4 +1,5 @@
 #include <AutoItConstants.au3>
+#include "LibDebug.au3"
 
 ; Arrow keys to move, ctrl + arrow to move 5x distance
 ; Alt + up/down to change delta
@@ -22,19 +23,19 @@ Global Enum $KEYNUM, $STATE, $TIMER
 ; Up, down, left, right
 Global $keys[4][3] = [[0x26, 0, 0], [0x28, 0, 0], [0x25, 0, 0], [0x27, 0, 0]]
 If Not $allowHotkeyPassThrough Then
-    HotKeySet("{UP}", "Move")
-    HotKeySet("{DOWN}", "Move")
-    HotKeySet("{LEFT}", "Move")
-    HotKeySet("{RIGHT}", "Move")
-    HotKeySet("^{UP}", "Move")
-    HotKeySet("^{DOWN}", "Move")
-    HotKeySet("^{LEFT}", "Move")
-    HotKeySet("^{RIGHT}", "Move")
+    CheckedHotKeySet("{UP}", "Move")
+    CheckedHotKeySet("{DOWN}", "Move")
+    CheckedHotKeySet("{LEFT}", "Move")
+    CheckedHotKeySet("{RIGHT}", "Move")
+    CheckedHotKeySet("^{UP}", "Move")
+    CheckedHotKeySet("^{DOWN}", "Move")
+    CheckedHotKeySet("^{LEFT}", "Move")
+    CheckedHotKeySet("^{RIGHT}", "Move")
 EndIf
-HotKeySet("!{UP}", "ChangeDelta")
-HotKeySet("!{DOWN}", "ChangeDelta")
-HotKeySet("{F6}", "TogglePause")
-HotKeySet("{F7}", "Terminate")
+CheckedHotKeySet("!{UP}", "ChangeDelta")
+CheckedHotKeySet("!{DOWN}", "ChangeDelta")
+CheckedHotKeySet("{F6}", "TogglePause")
+CheckedHotKeySet("{F7}", "Terminate")
 
 Func Move($dir, $mul = 1)
     Local Static $map[4][2] = [[0,-1],[0,1],[-1,0],[1,0]]
@@ -151,26 +152,26 @@ Func TogglePause()
     If $paused Then
         DisplayToolTip(@CRLF & "PAUSED!!", 2147483647)
         If Not $allowHotkeyPassThrough Then
-            HotKeySet("{UP}")
-            HotKeySet("{DOWN}")
-            HotKeySet("{LEFT}")
-            HotKeySet("{RIGHT}")
-            HotKeySet("^{UP}")
-            HotKeySet("^{DOWN}")
-            HotKeySet("^{LEFT}")
-            HotKeySet("^{RIGHT}")
+            CheckedHotKeySet("{UP}")
+            CheckedHotKeySet("{DOWN}")
+            CheckedHotKeySet("{LEFT}")
+            CheckedHotKeySet("{RIGHT}")
+            CheckedHotKeySet("^{UP}")
+            CheckedHotKeySet("^{DOWN}")
+            CheckedHotKeySet("^{LEFT}")
+            CheckedHotKeySet("^{RIGHT}")
         EndIf
     Else
         DisplayToolTip("")
         If Not $allowHotkeyPassThrough Then
-            HotKeySet("{UP}", "Move")
-            HotKeySet("{DOWN}", "Move")
-            HotKeySet("{LEFT}", "Move")
-            HotKeySet("{RIGHT}", "Move")
-            HotKeySet("^{UP}", "Move")
-            HotKeySet("^{DOWN}", "Move")
-            HotKeySet("^{LEFT}", "Move")
-            HotKeySet("^{RIGHT}", "Move")
+            CheckedHotKeySet("{UP}", "Move")
+            CheckedHotKeySet("{DOWN}", "Move")
+            CheckedHotKeySet("{LEFT}", "Move")
+            CheckedHotKeySet("{RIGHT}", "Move")
+            CheckedHotKeySet("^{UP}", "Move")
+            CheckedHotKeySet("^{DOWN}", "Move")
+            CheckedHotKeySet("^{LEFT}", "Move")
+            CheckedHotKeySet("^{RIGHT}", "Move")
         EndIf
     EndIf
 EndFunc
@@ -178,42 +179,4 @@ EndFunc
 Func Terminate()
     ToolTip("")
     Exit
-EndFunc
-
-Func iv($s = "", $v1 = 0x0, $v2 = 0x0, $v3 = 0x0, _
-                 $v4 = 0x0, $v5 = 0x0, $v6 = 0x0, _
-                 $v7 = 0x0, $v8 = 0x0, $v9 = 0x0, $v10 = 0x0)
-    $s = StringReplace($s, "\n", @CRLF)
-    If @NumParams > 1 Then
-        $s = StringReplace($s, "$$", "@PH@")
-        $s = StringReplace($s, "$", "@PH2@")
-        For $i = 1 To @NumParams - 1
-            ; Don't use Eval() to prevent breaking when compiled using stripper param /rm "rename variables"
-            Switch ($i)
-                Case 1
-                    $s = StringReplace($s, "@PH2@", $v1, 1)
-                Case 2
-                    $s = StringReplace($s, "@PH2@", $v2, 1)
-                Case 3
-                    $s = StringReplace($s, "@PH2@", $v3, 1)
-                Case 4
-                    $s = StringReplace($s, "@PH2@", $v4, 1)
-                Case 5
-                    $s = StringReplace($s, "@PH2@", $v5, 1)
-                Case 6
-                    $s = StringReplace($s, "@PH2@", $v6, 1)
-                Case 7
-                    $s = StringReplace($s, "@PH2@", $v7, 1)
-                Case 8
-                    $s = StringReplace($s, "@PH2@", $v8, 1)
-                Case 9
-                    $s = StringReplace($s, "@PH2@", $v9, 1)
-                Case 10
-                    $s = StringReplace($s, "@PH2@", $v10, 1)
-            EndSwitch
-            If @extended = 0 Then ExitLoop
-        Next
-        $s = StringReplace($s, "@PH@", "$")
-    EndIf
-    Return $s
 EndFunc
